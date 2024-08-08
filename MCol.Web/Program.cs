@@ -1,6 +1,17 @@
+using MCol.BLL.Controller;
+using MCol.DAL.Modelo;
+using Microsoft.EntityFrameworkCore;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
+builder.Services.AddControllersWithViews();
+
+//Agregar el Dbcontext al sistema de DI (Dependency Injection)
+builder.Services.AddDbContextFactory<ColegiosCOLContext>(options =>
+    options.UseSqlServer(builder.Configuration.GetConnectionString("connectionCol")));
+builder.Services.AddScoped<UsuariosControllerBLL>();
+
 builder.Services.AddControllersWithViews();
 
 var app = builder.Build();

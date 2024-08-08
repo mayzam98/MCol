@@ -12,6 +12,10 @@
     <ProjectReference Include="..\MCol.DTO\MCol.DTO.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Modelo\" />
+  </ItemGroup>
+
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>

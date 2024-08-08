@@ -1,20 +1,25 @@
 using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 using MCol.Web.Models;
+using MCol.BLL.Controller;
 
 namespace MCol.Web.Controllers;
 
 public class HomeController : Controller
 {
     private readonly ILogger<HomeController> _logger;
+    private readonly UsuariosControllerBLL _usuariosBLL;
 
-    public HomeController(ILogger<HomeController> logger)
+    public HomeController(ILogger<HomeController> logger, UsuariosControllerBLL usuariosBLL)
     {
         _logger = logger;
+        _usuariosBLL = usuariosBLL;
     }
 
     public IActionResult Index()
     {
+        _usuariosBLL.CreateNewUserAsync();
+   
         return View();
     }
 

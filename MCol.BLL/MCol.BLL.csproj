@@ -5,6 +5,10 @@
     <ProjectReference Include="..\MCol.DTO\MCol.DTO.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Usuarios\" />
+  </ItemGroup>
+
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>

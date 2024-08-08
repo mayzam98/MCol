@@ -1,0 +1,294 @@
+﻿{
+   "CodeGenerationMode": 3,
+   "ContextClassName": "ColegiosCOLContext",
+   "ContextNamespace": null,
+   "FilterSchemas": false,
+   "IncludeConnectionString": false,
+   "ModelNamespace": null,
+   "OutputContextPath": null,
+   "OutputPath": "Modelo",
+   "PreserveCasingWithRegex": true,
+   "ProjectRootNamespace": "MCol.DAL",
+   "Schemas": null,
+   "SelectedHandlebarsLanguage": 2,
+   "SelectedToBeGenerated": 0,
+   "T4TemplatePath": null,
+   "Tables": [
+      {
+         "Name": "[mcol].[tb_actividades_extracurriculares]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[mcol].[tb_acudientes]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[mcol].[tb_anos_escolares]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[mcol].[tb_areas]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[mcol].[tb_asignacion_cursos]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[mcol].[tb_auditorias]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[mcol].[tb_aulas]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[mcol].[tb_boletas]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[mcol].[tb_calificaciones]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[mcol].[tb_carnets]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[mcol].[tb_certificados]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[mcol].[tb_ciudades]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[mcol].[tb_colegios]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[mcol].[tb_comunicaciones]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[mcol].[tb_comunicaciones_institucionales]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[mcol].[tb_configuracion_mensajeria]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[mcol].[tb_consulta_asistencia]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[mcol].[tb_consulta_notas]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[mcol].[tb_consulta_pagos]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[mcol].[tb_contratos]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[mcol].[tb_control_acceso]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[mcol].[tb_departamentos]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[mcol].[tb_empleados]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[mcol].[tb_encuestas_satisfaccion]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[mcol].[tb_estudiantes]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[mcol].[tb_evaluaciones]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[mcol].[tb_facturas]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[mcol].[tb_grados]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[mcol].[tb_historial_academico]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[mcol].[tb_incidencias]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[mcol].[tb_informes_auditoria]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[mcol].[tb_inscripciones]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[mcol].[tb_logs]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[mcol].[tb_mantenimiento]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[mcol].[tb_modulos]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[mcol].[tb_nominas]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[mcol].[tb_noticias]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[mcol].[tb_oficinas_perfiles]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[mcol].[tb_pagina_institucional]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[mcol].[tb_paginas]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[mcol].[tb_pagos]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[mcol].[tb_paises]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[mcol].[tb_parametros]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[mcol].[tb_participacion_actividades]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[mcol].[tb_perfiles]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[mcol].[tb_permisos]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[mcol].[tb_planes_accion]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[mcol].[tb_planes_estudio]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[mcol].[tb_preguntas_encuesta]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[mcol].[tb_prioridad_paginas]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[mcol].[tb_recursos_educativos]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[mcol].[tb_reportes]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[mcol].[tb_reportes_asistencia]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[mcol].[tb_reportes_financieros]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[mcol].[tb_respuestas_encuesta]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[mcol].[tb_rutas_documentos]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[mcol].[tb_tipos_documentos]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[mcol].[tb_tipos_identificacion]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[mcol].[tb_tipos_parentesco]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[mcol].[tb_transiciones_estudiantes]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[mcol].[tb_usuarios]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[mcol].[tb_usuarios_logueados]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[mcol].[tb_usuarios_perfiles]",
+         "ObjectType": 0
+      }
+   ],
+   "UiHint": null,
+   "UncountableWords": null,
+   "UseAsyncStoredProcedureCalls": true,
+   "UseBoolPropertiesWithoutDefaultSql": false,
+   "UseDatabaseNames": true,
+   "UseDateOnlyTimeOnly": false,
+   "UseDbContextSplitting": false,
+   "UseDecimalDataAnnotationForSprocResult": true,
+   "UseFluentApiOnly": false,
+   "UseHandleBars": false,
+   "UseHierarchyId": false,
+   "UseInflector": false,
+   "UseLegacyPluralizer": false,
+   "UseManyToManyEntity": false,
+   "UseNoDefaultConstructor": false,
+   "UseNoNavigations": false,
+   "UseNoObjectFilter": false,
+   "UseNodaTime": false,
+   "UseNullableReferences": false,
+   "UsePrefixNavigationNaming": false,
+   "UseSchemaFolders": false,
+   "UseSchemaNamespaces": false,
+   "UseSpatial": false,
+   "UseT4": false
+}
