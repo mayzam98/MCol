@@ -8,24 +8,18 @@ using System.Threading.Tasks;
 
 namespace MCol.BLL.Controller
 {
-    public class BaseControllerBLL
+    public abstract class BaseControllerBLL
     {
-        //private ColegiosCOLContext? _dbContextCol;
+        protected readonly IDbContextFactory<ColegiosCOLContext> _contextFactory;
 
-        //protected ColegiosCOLContext ConnectionCol{ 
-        //    get {
-        //        if (_dbContextCol == null)
-        //        {
-        //            _dbContextCol = new ColegiosCOLContext();
-        //        }
-        //        return _dbContextCol; 
-        //    }
-        //}
+        protected BaseControllerBLL(IDbContextFactory<ColegiosCOLContext> contextFactory)
+        {
+            _contextFactory = contextFactory;
+        }
 
-        //protected void CloseConnection()
-        //{
-        //    _dbContextCol = null;
-        //}
-
+        protected ColegiosCOLContext CreateDbContext()
+        {
+            return _contextFactory.CreateDbContext();
+        }
     }
 }

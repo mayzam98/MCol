@@ -10,13 +10,8 @@ namespace MCol.BLL.Controller
 {
     public class UsuariosControllerBLL : BaseControllerBLL
     {
-        private readonly IDbContextFactory<ColegiosCOLContext> _contextFactory;
-
-        // Asegúrate de que el constructor sea público
         public UsuariosControllerBLL(IDbContextFactory<ColegiosCOLContext> contextFactory)
-        {
-            _contextFactory = contextFactory;
-        }
+         : base(contextFactory) { }
         public async Task CreateNewUserAsync()
         {
             try
