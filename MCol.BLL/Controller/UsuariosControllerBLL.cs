@@ -20,9 +20,9 @@ namespace MCol.BLL.Controller
 
                 var newUser = new tb_usuarios
                 {
-                    nombre = "Nombre Usuario",
+                    login = "Nombre Usuario",
                     password = "ContraseñaSegura123",
-                    email = "usuario@example.com",
+                    correo_electronico = "usuario@example.com",
                 };
 
                 _context.tb_usuarios.Add(newUser);
@@ -38,7 +38,7 @@ namespace MCol.BLL.Controller
         public async Task<tb_usuarios> GetUserByLoginAsync( string nombre)
         {
             using var _context = _contextFactory.CreateDbContext();
-            var user = await _context.tb_usuarios.FirstOrDefaultAsync(u => u.nombre == nombre);
+            var user = await _context.tb_usuarios.FirstOrDefaultAsync(u => u.login == nombre);
             return user;
         }
 
@@ -46,11 +46,11 @@ namespace MCol.BLL.Controller
         {
             using var _context = _contextFactory.CreateDbContext();
             var user = await _context.tb_usuarios
-                .FirstOrDefaultAsync(u => u.nombre == nombre);
+                .FirstOrDefaultAsync(u => u.login == nombre);
 
             if (user != null)
             {
-                user.email = newEmail;
+                user.correo_electronico = newEmail;
                 await _context.SaveChangesAsync();
             }
         }
@@ -59,7 +59,7 @@ namespace MCol.BLL.Controller
         {
             using var _context = _contextFactory.CreateDbContext();
             var user = await _context.tb_usuarios
-                .FirstOrDefaultAsync(u => u.nombre == nombre);
+                .FirstOrDefaultAsync(u => u.login == nombre);
 
             if (user != null)
             {

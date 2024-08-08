@@ -12,14 +12,16 @@ namespace MCol.DAL.Modelo;
 public partial class tb_usuarios_logueados
 {
     [Key]
-    public int id_logueado { get; set; }
+    public long id_usuarioslogueados { get; set; }
 
-    public int? fk_id_usuario { get; set; }
+    [StringLength(255)]
+    public string login { get; set; }
+
+    public string key_sesion { get; set; }
 
     [Column(TypeName = "datetime")]
-    public DateTime? fecha_logueo { get; set; }
+    public DateTime? fecha_conexion { get; set; }
 
-    [ForeignKey("fk_id_usuario")]
-    [InverseProperty("tb_usuarios_logueados")]
-    public virtual tb_usuarios fk_id_usuarioNavigation { get; set; }
+    [StringLength(50)]
+    public string ip_conexion { get; set; }
 }

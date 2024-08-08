@@ -163,10 +163,6 @@
          "ObjectType": 0
       },
       {
-         "Name": "[mcol].[tb_oficinas_perfiles]",
-         "ObjectType": 0
-      },
-      {
          "Name": "[mcol].[tb_pagina_institucional]",
          "ObjectType": 0
       },

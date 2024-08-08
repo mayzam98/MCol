@@ -14,17 +14,37 @@ public partial class tb_permisos
     [Key]
     public int id_permiso { get; set; }
 
+    public int? fk_id_pagina { get; set; }
+
     public int fk_id_perfil { get; set; }
 
-    public int fk_id_pagina { get; set; }
+    public bool lectura { get; set; }
 
     public bool crear { get; set; }
-
-    public bool leer { get; set; }
 
     public bool actualizar { get; set; }
 
     public bool borrar { get; set; }
+
+    public bool anular { get; set; }
+
+    public bool anular_dia { get; set; }
+
+    [StringLength(255)]
+    public string usuario_creacion { get; set; }
+
+    [Column(TypeName = "datetime")]
+    public DateTime? fecha_creacion { get; set; }
+
+    [StringLength(255)]
+    public string usuario_actualizacion { get; set; }
+
+    [Column(TypeName = "datetime")]
+    public DateTime? fecha_actualizacion { get; set; }
+
+    [StringLength(128)]
+    [Unicode(false)]
+    public string app_name_origen { get; set; }
 
     [ForeignKey("fk_id_pagina")]
     [InverseProperty("tb_permisos")]

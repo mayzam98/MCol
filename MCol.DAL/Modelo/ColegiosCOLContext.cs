@@ -8,7 +8,6 @@ namespace MCol.DAL.Modelo;
 
 public partial class ColegiosCOLContext : DbContext
 {
-
     public ColegiosCOLContext(DbContextOptions<ColegiosCOLContext> options)
         : base(options)
     {
@@ -87,8 +86,6 @@ public partial class ColegiosCOLContext : DbContext
     public virtual DbSet<tb_nominas> tb_nominas { get; set; }
 
     public virtual DbSet<tb_noticias> tb_noticias { get; set; }
-
-    public virtual DbSet<tb_oficinas_perfiles> tb_oficinas_perfiles { get; set; }
 
     public virtual DbSet<tb_pagina_institucional> tb_pagina_institucional { get; set; }
 
@@ -223,7 +220,7 @@ public partial class ColegiosCOLContext : DbContext
 
         modelBuilder.Entity<tb_comunicaciones>(entity =>
         {
-            entity.HasKey(e => e.id_comunicacion).HasName("PK__tb_comun__D76C5071ED01A340");
+            entity.HasKey(e => e.id_comunicacion).HasName("PK__tb_comun__D76C50711903B69D");
 
             entity.HasOne(d => d.fk_id_usuarioNavigation).WithMany(p => p.tb_comunicaciones).HasConstraintName("FK_Comunicacion_Usuario");
         });
@@ -366,11 +363,6 @@ public partial class ColegiosCOLContext : DbContext
             entity.HasOne(d => d.fk_id_aulaNavigation).WithMany(p => p.tb_mantenimiento).HasConstraintName("FK_Mantenimiento_Aula");
         });
 
-        modelBuilder.Entity<tb_modulos>(entity =>
-        {
-            entity.HasKey(e => e.id_modulo).HasName("PK__tb_modul__B2584DFCD900213D");
-        });
-
         modelBuilder.Entity<tb_nominas>(entity =>
         {
             entity.HasKey(e => e.id_nomina).HasName("PK__tb_nomin__1E7025F6E6F56D57");
@@ -383,13 +375,6 @@ public partial class ColegiosCOLContext : DbContext
             entity.HasKey(e => e.id_noticia).HasName("PK__tb_notic__1D4A6BA143217743");
         });
 
-        modelBuilder.Entity<tb_oficinas_perfiles>(entity =>
-        {
-            entity.HasKey(e => e.id_oficina_perfil).HasName("PK__tb_ofici__5F668D3FF20006D7");
-
-            entity.HasOne(d => d.fk_id_perfilNavigation).WithMany(p => p.tb_oficinas_perfiles).HasConstraintName("FK_Oficina_Perfil_Perfil");
-        });
-
         modelBuilder.Entity<tb_pagina_institucional>(entity =>
         {
             entity.HasKey(e => e.id_pagina).HasName("PK__tb_pagin__A2A7C7B6FF32B551");
@@ -397,7 +382,9 @@ public partial class ColegiosCOLContext : DbContext
 
         modelBuilder.Entity<tb_paginas>(entity =>
         {
-            entity.HasKey(e => e.id_pagina).HasName("PK__tb_pagin__A2A7C7B680D2E819");
+            entity.HasOne(d => d.fk_id_moduloNavigation).WithMany(p => p.tb_paginas)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_tb_paginas_tb_modulos");
         });
 
         modelBuilder.Entity<tb_pagos>(entity =>
@@ -426,16 +413,9 @@ public partial class ColegiosCOLContext : DbContext
             entity.HasOne(d => d.fk_id_estudianteNavigation).WithMany(p => p.tb_participacion_actividades).HasConstraintName("FK_Participacion_Estudiante");
         });
 
-        modelBuilder.Entity<tb_perfiles>(entity =>
-        {
-            entity.HasKey(e => e.id_perfil).HasName("PK__tb_perfi__1D1C8768C7CB80B3");
-        });
-
         modelBuilder.Entity<tb_permisos>(entity =>
         {
-            entity.HasOne(d => d.fk_id_paginaNavigation).WithMany(p => p.tb_permisos)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_tb_permisos_tb_paginas");
+            entity.HasOne(d => d.fk_id_paginaNavigation).WithMany(p => p.tb_permisos).HasConstraintName("FK_tb_permisos_tb_paginas");
 
             entity.HasOne(d => d.fk_id_perfilNavigation).WithMany(p => p.tb_permisos)
                 .OnDelete(DeleteBehavior.ClientSetNull)
@@ -463,7 +443,7 @@ public partial class ColegiosCOLContext : DbContext
 
         modelBuilder.Entity<tb_prioridad_paginas>(entity =>
         {
-            entity.HasKey(e => e.id_prioridad).HasName("PK__tb_prior__EF3DAB403985EDA0");
+            entity.HasKey(e => e.id_prioridad).HasName("PK__tb_prior__EF3DAB4016D1D826");
 
             entity.HasOne(d => d.fk_id_paginaNavigation).WithMany(p => p.tb_prioridad_paginas).HasConstraintName("FK_Prioridad_Pagina");
         });
@@ -534,25 +514,15 @@ public partial class ColegiosCOLContext : DbContext
             entity.HasOne(d => d.fk_id_grado_siguienteNavigation).WithMany(p => p.tb_transiciones_estudiantesfk_id_grado_siguienteNavigation).HasConstraintName("FK_Transicion_Grado_Siguiente");
         });
 
-        modelBuilder.Entity<tb_usuarios>(entity =>
-        {
-            entity.HasKey(e => e.id_usuario).HasName("PK__tb_usuar__4E3E04AD09647CCD");
-        });
-
-        modelBuilder.Entity<tb_usuarios_logueados>(entity =>
-        {
-            entity.HasKey(e => e.id_logueado).HasName("PK__tb_usuar__1DBFD88DF2F4AB88");
-
-            entity.HasOne(d => d.fk_id_usuarioNavigation).WithMany(p => p.tb_usuarios_logueados).HasConstraintName("FK_Usuario_Logueado_Usuario");
-        });
-
         modelBuilder.Entity<tb_usuarios_perfiles>(entity =>
         {
-            entity.HasKey(e => e.id_usuario_perfil).HasName("PK__tb_usuar__8B410C79C60B14DE");
+            entity.HasOne(d => d.fk_id_perfilNavigation).WithMany(p => p.tb_usuarios_perfiles)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_tb_usuarios_perfiles_tb_perfiles");
 
-            entity.HasOne(d => d.fk_id_perfilNavigation).WithMany(p => p.tb_usuarios_perfiles).HasConstraintName("FK_Usuario_Perfil_Perfil");
-
-            entity.HasOne(d => d.fk_id_usuarioNavigation).WithMany(p => p.tb_usuarios_perfiles).HasConstraintName("FK_Usuario_Perfil_Usuario");
+            entity.HasOne(d => d.fk_id_usuarioNavigation).WithMany(p => p.tb_usuarios_perfiles)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_tb_usuarios_perfiles_tb_usuarios");
         });
 
         OnModelCreatingPartial(modelBuilder);

@@ -14,20 +14,43 @@ public partial class tb_usuarios
     [Key]
     public int id_usuario { get; set; }
 
-    [StringLength(100)]
-    public string nombre { get; set; }
+    [StringLength(255)]
+    public string nombre_completo { get; set; }
 
-    [StringLength(100)]
+    [Required]
+    [StringLength(255)]
+    public string login { get; set; }
+
+    [Required]
     public string password { get; set; }
 
-    [StringLength(100)]
-    public string email { get; set; }
+    [StringLength(50)]
+    public string correo_electronico { get; set; }
+
+    public int? fk_id_colegio { get; set; }
+
+    [StringLength(32)]
+    [Unicode(false)]
+    public string token { get; set; }
+
+    public bool estado { get; set; }
+
+    public bool? cambio_clave { get; set; }
+
+    [StringLength(255)]
+    public string usuario_creacion { get; set; }
+
+    [Column(TypeName = "datetime")]
+    public DateTime? fecha_creacion { get; set; }
+
+    [StringLength(255)]
+    public string usuario_modificacion { get; set; }
+
+    [Column(TypeName = "datetime")]
+    public DateTime? fecha_modificacion { get; set; }
 
     [InverseProperty("fk_id_usuarioNavigation")]
     public virtual ICollection<tb_comunicaciones> tb_comunicaciones { get; set; } = new List<tb_comunicaciones>();
-
-    [InverseProperty("fk_id_usuarioNavigation")]
-    public virtual ICollection<tb_usuarios_logueados> tb_usuarios_logueados { get; set; } = new List<tb_usuarios_logueados>();
 
     [InverseProperty("fk_id_usuarioNavigation")]
     public virtual ICollection<tb_usuarios_perfiles> tb_usuarios_perfiles { get; set; } = new List<tb_usuarios_perfiles>();

@@ -14,14 +14,25 @@ public partial class tb_perfiles
     [Key]
     public int id_perfil { get; set; }
 
-    [StringLength(100)]
-    public string nombre { get; set; }
-
-    [Column(TypeName = "text")]
+    [Required]
+    [StringLength(200)]
     public string descripcion { get; set; }
 
-    [InverseProperty("fk_id_perfilNavigation")]
-    public virtual ICollection<tb_oficinas_perfiles> tb_oficinas_perfiles { get; set; } = new List<tb_oficinas_perfiles>();
+    public bool estado { get; set; }
+
+    public long? id_origen { get; set; }
+
+    [StringLength(255)]
+    public string usuario_creacion { get; set; }
+
+    [Column(TypeName = "datetime")]
+    public DateTime? fecha_creacion { get; set; }
+
+    [StringLength(255)]
+    public string usuario_modificacion { get; set; }
+
+    [Column(TypeName = "datetime")]
+    public DateTime? fecha_modificacion { get; set; }
 
     [InverseProperty("fk_id_perfilNavigation")]
     public virtual ICollection<tb_permisos> tb_permisos { get; set; } = new List<tb_permisos>();

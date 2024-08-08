@@ -1,5 +1,6 @@
 using MCol.BLL.Controller;
 using MCol.DAL.Modelo;
+using MCol.Web.Filters;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -30,14 +31,13 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
         };
     });
 
+
 // Configure authorization policies
-builder.Services.AddAuthorization(options =>
-{
-    options.AddPolicy("Admin", policy => policy.RequireRole("Admin"));
-    options.AddPolicy("User", policy => policy.RequireRole("User"));
-});
+builder.Services.AddAuthorization();
 //Register BLL Service
 builder.Services.AddScoped<UsuariosControllerBLL>();
+builder.Services.AddScoped<JwtAuthenticationFilter>();
+builder.Services.AddScoped<SecurityController>();
 
 builder.Services.AddControllersWithViews();
 
@@ -60,6 +60,7 @@ app.UseRouting();
 app.UseAuthentication();
 app.UseAuthorization();
 
+app.MapControllers();
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");

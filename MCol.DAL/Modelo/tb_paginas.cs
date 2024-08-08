@@ -14,11 +14,28 @@ public partial class tb_paginas
     [Key]
     public int id_pagina { get; set; }
 
-    [StringLength(100)]
-    public string nombre { get; set; }
+    public int fk_id_modulo { get; set; }
 
-    [StringLength(255)]
-    public string url { get; set; }
+    [Required]
+    [StringLength(100)]
+    public string descripcion { get; set; }
+
+    [StringLength(50)]
+    public string icono { get; set; }
+
+    [Required]
+    public string ruta { get; set; }
+
+    public bool estado { get; set; }
+
+    [StringLength(50)]
+    public string reporte { get; set; }
+
+    public int? orden { get; set; }
+
+    [ForeignKey("fk_id_modulo")]
+    [InverseProperty("tb_paginas")]
+    public virtual tb_modulos fk_id_moduloNavigation { get; set; }
 
     [InverseProperty("fk_id_paginaNavigation")]
     public virtual ICollection<tb_permisos> tb_permisos { get; set; } = new List<tb_permisos>();

@@ -8,15 +8,29 @@ using Microsoft.EntityFrameworkCore;
 
 namespace MCol.DAL.Modelo;
 
+[PrimaryKey("fk_id_usuario", "fk_id_perfil")]
 [Table("tb_usuarios_perfiles", Schema = "mcol")]
 public partial class tb_usuarios_perfiles
 {
     [Key]
-    public int id_usuario_perfil { get; set; }
+    public int fk_id_usuario { get; set; }
 
-    public int? fk_id_usuario { get; set; }
+    [Key]
+    public int fk_id_perfil { get; set; }
 
-    public int? fk_id_perfil { get; set; }
+    public bool? estado { get; set; }
+
+    [StringLength(255)]
+    public string usuario_creacion { get; set; }
+
+    [Column(TypeName = "datetime")]
+    public DateTime? fecha_creacion { get; set; }
+
+    [StringLength(255)]
+    public string usuario_modificacion { get; set; }
+
+    [Column(TypeName = "datetime")]
+    public DateTime? fecha_modificacion { get; set; }
 
     [ForeignKey("fk_id_perfil")]
     [InverseProperty("tb_usuarios_perfiles")]
