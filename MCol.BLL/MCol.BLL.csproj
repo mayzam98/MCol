@@ -1,12 +1,14 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <ItemGroup>
-    <ProjectReference Include="..\MCol.DAL\MCol.DAL.csproj" />
-    <ProjectReference Include="..\MCol.DTO\MCol.DTO.csproj" />
+    <Compile Remove="Usuarios\**" />
+    <EmbeddedResource Remove="Usuarios\**" />
+    <None Remove="Usuarios\**" />
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Usuarios\" />
+    <ProjectReference Include="..\MCol.DAL\MCol.DAL.csproj" />
+    <ProjectReference Include="..\MCol.DTO\MCol.DTO.csproj" />
   </ItemGroup>
 
   <ItemGroup>
