@@ -298,9 +298,11 @@ namespace MCol.BLL.Controller
             //new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
             //};
             var claims = new List<Claim>
-{
-    new Claim(ClaimTypes.Name, username),
-};
+            {
+                new Claim(ClaimTypes.Name, username),
+                new Claim(JwtRegisteredClaimNames.Sub, username),
+                new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
+            };
 
             var token = new JwtSecurityToken(
                 issuer: "your_issuer",
