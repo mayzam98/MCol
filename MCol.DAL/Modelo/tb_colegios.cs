@@ -21,6 +21,9 @@ public partial class tb_colegios
     public string direccion { get; set; }
 
     [InverseProperty("fk_id_colegioNavigation")]
+    public virtual ICollection<tb_colegios_perfiles> tb_colegios_perfiles { get; set; } = new List<tb_colegios_perfiles>();
+
+    [InverseProperty("fk_id_colegioNavigation")]
     public virtual ICollection<tb_comunicaciones_institucionales> tb_comunicaciones_institucionales { get; set; } = new List<tb_comunicaciones_institucionales>();
 
     [InverseProperty("fk_id_colegioNavigation")]

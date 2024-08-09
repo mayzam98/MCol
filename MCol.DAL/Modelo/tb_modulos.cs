@@ -15,15 +15,16 @@ public partial class tb_modulos
     public int id_modulo { get; set; }
 
     [Required]
-    [StringLength(100)]
+    [StringLength(150)]
     public string descripcion { get; set; }
 
-    [StringLength(50)]
-    public string icono { get; set; }
-
-    public int orden { get; set; }
+    [Required]
+    [StringLength(150)]
+    public string imagenIcono { get; set; }
 
     public bool estado { get; set; }
+
+    public int orden { get; set; }
 
     [InverseProperty("fk_id_moduloNavigation")]
     public virtual ICollection<tb_paginas> tb_paginas { get; set; } = new List<tb_paginas>();

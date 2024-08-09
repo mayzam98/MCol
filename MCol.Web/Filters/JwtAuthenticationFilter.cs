@@ -21,7 +21,7 @@ namespace MCol.Web.Filters
         public async Task OnAuthorizationAsync(AuthorizationFilterContext context)
         {
             var request = context.HttpContext.Request;
-            var authorizationHeader = request.Headers["Authorization"].ToString();
+            var authorizationHeader = request.Headers["AuthToken"].ToString();
 
             if (string.IsNullOrEmpty(authorizationHeader) || !authorizationHeader.StartsWith("Bearer "))
             {

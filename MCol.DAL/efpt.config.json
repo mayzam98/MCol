@@ -67,6 +67,10 @@
          "ObjectType": 0
       },
       {
+         "Name": "[mcol].[tb_colegios_perfiles]",
+         "ObjectType": 0
+      },
+      {
          "Name": "[mcol].[tb_comunicaciones]",
          "ObjectType": 0
       },

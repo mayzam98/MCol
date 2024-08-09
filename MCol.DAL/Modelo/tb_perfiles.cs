@@ -35,6 +35,9 @@ public partial class tb_perfiles
     public DateTime? fecha_modificacion { get; set; }
 
     [InverseProperty("fk_id_perfilNavigation")]
+    public virtual ICollection<tb_colegios_perfiles> tb_colegios_perfiles { get; set; } = new List<tb_colegios_perfiles>();
+
+    [InverseProperty("fk_id_perfilNavigation")]
     public virtual ICollection<tb_permisos> tb_permisos { get; set; } = new List<tb_permisos>();
 
     [InverseProperty("fk_id_perfilNavigation")]

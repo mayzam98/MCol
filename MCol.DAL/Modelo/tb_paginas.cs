@@ -9,6 +9,7 @@ using Microsoft.EntityFrameworkCore;
 namespace MCol.DAL.Modelo;
 
 [Table("tb_paginas", Schema = "mcol")]
+[Index("id_pagina", Name = "UQ_tb_paginas_id_pagina", IsUnique = true)]
 public partial class tb_paginas
 {
     [Key]
@@ -32,6 +33,9 @@ public partial class tb_paginas
     public string reporte { get; set; }
 
     public int? orden { get; set; }
+
+    [StringLength(50)]
+    public string nombre_title_html { get; set; }
 
     [ForeignKey("fk_id_modulo")]
     [InverseProperty("tb_paginas")]

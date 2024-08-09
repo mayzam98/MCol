@@ -39,6 +39,8 @@ public partial class ColegiosCOLContext : DbContext
 
     public virtual DbSet<tb_colegios> tb_colegios { get; set; }
 
+    public virtual DbSet<tb_colegios_perfiles> tb_colegios_perfiles { get; set; }
+
     public virtual DbSet<tb_comunicaciones> tb_comunicaciones { get; set; }
 
     public virtual DbSet<tb_comunicaciones_institucionales> tb_comunicaciones_institucionales { get; set; }
@@ -218,6 +220,17 @@ public partial class ColegiosCOLContext : DbContext
             entity.HasKey(e => e.id_colegio).HasName("PK__tb_coleg__34F63C1D7A83EBD4");
         });
 
+        modelBuilder.Entity<tb_colegios_perfiles>(entity =>
+        {
+            entity.HasOne(d => d.fk_id_colegioNavigation).WithMany(p => p.tb_colegios_perfiles)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_tb_colegios_perfiles_tb_oficinas");
+
+            entity.HasOne(d => d.fk_id_perfilNavigation).WithMany(p => p.tb_colegios_perfiles)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_tb_oficinas_perfiles_tb_perfiles");
+        });
+
         modelBuilder.Entity<tb_comunicaciones>(entity =>
         {
             entity.HasKey(e => e.id_comunicacion).HasName("PK__tb_comun__D76C50711903B69D");
@@ -361,6 +374,11 @@ public partial class ColegiosCOLContext : DbContext
             entity.HasKey(e => e.id_mantenimiento).HasName("PK__tb_mante__707E5D167BF32199");
 
             entity.HasOne(d => d.fk_id_aulaNavigation).WithMany(p => p.tb_mantenimiento).HasConstraintName("FK_Mantenimiento_Aula");
+        });
+
+        modelBuilder.Entity<tb_modulos>(entity =>
+        {
+            entity.HasKey(e => e.id_modulo).HasName("PK_tb_modulos_1");
         });
 
         modelBuilder.Entity<tb_nominas>(entity =>
