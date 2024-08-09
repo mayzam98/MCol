@@ -4,6 +4,7 @@ using Microsoft.IdentityModel.Tokens;
 using System.Security.Claims;
 using System.Text;
 using MCol.BLL.Controller;
+using Microsoft.CodeAnalysis.Elfie.Model;
 
 namespace MCol.Web.Filters
 {
@@ -21,7 +22,13 @@ namespace MCol.Web.Filters
         public async Task OnAuthorizationAsync(AuthorizationFilterContext context)
         {
             var request = context.HttpContext.Request;
-            var authorizationHeader = request.Headers["AuthToken"].ToString();
+            var cokie = request.Cookies["Token"] == null ? "": request.Cookies["Token"].ToString();
+            if (!string.IsNullOrEmpty(cokie) )
+            {
+                request.Headers.Add("Authorization", "Bearer " + cokie);
+            }
+
+            var authorizationHeader = request.Headers["Authorization"].ToString();
 
             if (string.IsNullOrEmpty(authorizationHeader) || !authorizationHeader.StartsWith("Bearer "))
             {

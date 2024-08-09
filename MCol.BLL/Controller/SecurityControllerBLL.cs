@@ -21,12 +21,15 @@ namespace MCol.BLL.Controller
         private readonly ColegiosCOLContext _context;
         private readonly IHttpContextAccessor _httpContextAccessor; 
         private static string _secretKey;
+        private readonly IConfiguration _configuration;
+
 
         public SecurityController(IDbContextFactory<ColegiosCOLContext> contextFactory, IHttpContextAccessor httpContextAccessor , IConfiguration configuration) : base(contextFactory)
         {
             _context = CreateDbContext();
             _httpContextAccessor = httpContextAccessor;
             _secretKey = configuration["Jwt:Key"];
+            _configuration = configuration;
 
         }
 
@@ -34,7 +37,7 @@ namespace MCol.BLL.Controller
         {
             var user = _context.tb_usuarios
                 .Include(u => u.tb_usuarios_perfiles)
-                .FirstOrDefault(u => u.login == username && u.password == Sha256(password));
+                .FirstOrDefault(u => u.login == username && u.password == password/*Sha256(password)*/);
 
             if (user != null)
             {
@@ -54,7 +57,7 @@ namespace MCol.BLL.Controller
                         }).ToList()
                 };
 
-                userDTO.TokenAutorizacion = GenerateTokenJwt(userDTO.UserName);
+                userDTO.TokenAutorizacion = GenerateToken(userDTO.UserName);
                 ControlInicioSessionUser(userDTO);
                 return userDTO;
             }
@@ -282,7 +285,32 @@ namespace MCol.BLL.Controller
 
             return new JwtSecurityTokenHandler().WriteToken(token);
         }
+        
+        public string GenerateToken(string username)
+        {
+            var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_secretKey));
+            var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
 
+            //var claims = new[]
+            //{
+            //new Claim(JwtRegisteredClaimNames.Sub, username),
+            //new Claim(JwtRegisteredClaimNames.Name, username),
+            //new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
+            //};
+            var claims = new List<Claim>
+{
+    new Claim(ClaimTypes.Name, username),
+};
+
+            var token = new JwtSecurityToken(
+                issuer: "your_issuer",
+                audience: "your_audience",
+                claims: claims,
+                expires: DateTime.Now.AddMinutes(30),
+                signingCredentials: credentials);
+
+            return new JwtSecurityTokenHandler().WriteToken(token);
+        }
         public static string Sha256(string data)
         {
             using (SHA256 sha256Hash = SHA256.Create())
@@ -300,44 +328,35 @@ namespace MCol.BLL.Controller
             }
         }
 
-     
-            //private static string _secretKey;
 
-            //public static void Configure(IConfiguration configuration)
-            //{
-            //    _secretKey = configuration["Jwt:Key"];
-            //}
+        //private static string _secretKey;
 
-            public static string GenerateTokenJwt(string username)
-        {
-            try
-            {
-                var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_secretKey));
-                var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
+        //public static void Configure(IConfiguration configuration)
+        //{
+        //    _secretKey = configuration["Jwt:Key"];
+        //}
 
-                var claims = new[]
-                {
-                new Claim(JwtRegisteredClaimNames.Sub, username),
-                new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
-            };
+        //public string GenerateTokenJwt(string username)
+        //{
+        //    var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_secretKey));
+        //    var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
 
-                var token = new JwtSecurityToken(
-                    issuer: "yourIssuer",
-                    audience: "yourAudience",
-                    claims: claims,
-                    expires: DateTime.Now.AddMinutes(30),
-                    signingCredentials: credentials);
+        //    var claims = new[]
+        //    {
+        //    new Claim(JwtRegisteredClaimNames.Sub, username),
+        //    new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
+        //};
 
-                return new JwtSecurityTokenHandler().WriteToken(token);
-            }
-            catch (Exception)
-            {
+        //    var token = new JwtSecurityToken(
+        //        issuer: _configuration["Jwt:Issuer"],
+        //        audience: _configuration["Jwt:Audience"],
+        //        claims: claims,
+        //        expires: DateTime.Now.AddMinutes(30),
+        //        signingCredentials: credentials);
 
-                throw;
-            }
-            }
-
-            public string GetIP()
+        //    return new JwtSecurityTokenHandler().WriteToken(token);
+        //}
+        public string GetIP()
             {
                 string IP;
                 try

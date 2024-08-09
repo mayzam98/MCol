@@ -19,7 +19,7 @@ namespace MCol.Web.Controllers
         public IActionResult Index()
         {
             var username = User.Identity.Name;
-            var token = Request.Cookies["AuthToken"]; // Obtener el token de las cookies
+            var token = Request.Cookies["Token"]; // Obtener el token de las cookies
 
             if (string.IsNullOrEmpty(token) || !_securityController.JwtCurrentUser(username, token))
             {
