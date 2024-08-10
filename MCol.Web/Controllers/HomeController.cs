@@ -17,9 +17,7 @@ public class HomeController : Controller
     }
 
     public IActionResult Index()
-    {
-        _usuariosBLL.CreateNewUserAsync();
-   
+    {  
         return View();
     }
 

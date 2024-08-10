@@ -26,19 +26,21 @@
                         <h3>Login</h3>
                     </div>
                     <div class="card-body">
-                        <form asp-action="Login">
+                            <form id="loginForm" method="post" data-login-url="@Url.Action("Login", "Account")">
                             <div class="mb-3">
                                 <label for="Username" class="form-label">Username</label>
-                                <input type="text" class="form-control" id="Username" name="Username" placeholder="Enter your username" required>
+                                <input type="text" class="form-control" id="Username" name="Username" placeholder="Ingrese usuario" required>
                             </div>
                             <div class="mb-3">
                                 <label for="Password" class="form-label">Password</label>
-                                <input type="password" class="form-control" id="Password" name="Password" placeholder="Enter your password" required>
+                                <input type="password" class="form-control" id="Password" name="Password" placeholder="Ingrese contraseña" required>
                             </div>
                             <div class="d-grid gap-2">
                                 <button type="submit" class="btn btn-dark btn-block">Login</button>
                             </div>
                         </form>
+                            <div id="errorMessage" class="alert alert-danger text-center mt-3 d-none"></div>
+
                     </div>
                     <div class="card-footer text-center">
                         <a href="#" class="text-muted">Forgot your password?</a>
@@ -49,5 +51,9 @@
     </div>
     </div>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
+    <script src="~/lib/jquery-validation/dist/additional-methods.min.js"></script>
+    <script src="~/js/login.js"></script>
 </body>
 </html>

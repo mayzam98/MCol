@@ -1,5 +1,6 @@
 ﻿using MCol.BLL.Controller;
 using MCol.Web.Filters;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace MCol.Web.Controllers
@@ -19,12 +20,12 @@ namespace MCol.Web.Controllers
         public IActionResult Index()
         {
             var username = User.Identity.Name;
-            var token = Request.Cookies["Token"]; // Obtener el token de las cookies
+            //var token = Request.Cookies["Token"]; // Obtener el token de las cookies
 
-            if (string.IsNullOrEmpty(token) || !_securityController.JwtCurrentUser(username, token))
-            {
-                return RedirectToAction("Login", "Account"); // Redirigir a Login si no está autenticado
-            }
+            //if (string.IsNullOrEmpty(token) || !_securityController.JwtCurrentUser(username, token))
+            //{
+            //    return RedirectToAction("Login", "Account"); // Redirigir a Login si no está autenticado
+            //}
 
             var permissions = _securityController.GetUserPermissions(username, "Dashboard");
             if (permissions.Any(p => p.Acceso))

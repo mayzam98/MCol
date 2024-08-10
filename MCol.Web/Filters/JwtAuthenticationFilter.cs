@@ -5,6 +5,7 @@ using System.Security.Claims;
 using System.Text;
 using MCol.BLL.Controller;
 using Microsoft.CodeAnalysis.Elfie.Model;
+using System.IdentityModel.Tokens.Jwt;
 
 namespace MCol.Web.Filters
 {
@@ -32,7 +33,9 @@ namespace MCol.Web.Filters
 
             if (string.IsNullOrEmpty(authorizationHeader) || !authorizationHeader.StartsWith("Bearer "))
             {
-                context.Result = new UnauthorizedResult();
+                //context.Result = new UnauthorizedResult();
+                context.HttpContext.Session.Clear();
+                context.Result = new RedirectResult("~/Account/Login");
                 return;
             }
 
@@ -48,18 +51,41 @@ namespace MCol.Web.Filters
                 ValidAudience = audienceToken,
                 ValidIssuer = issuerToken,
                 ValidateLifetime = true,
+                ValidateIssuer = true,
+                ValidateAudience = true,
                 ValidateIssuerSigningKey = true,
                 IssuerSigningKey = securityKey
             };
 
             try
             {
+
                 var claimsPrincipal = tokenHandler.ValidateToken(token, validationParameters, out var securityToken);
                 var claimsIdentity = claimsPrincipal.Identity as ClaimsIdentity;
-
+                if (claimsIdentity == null || !claimsIdentity.Claims.Any())
+                {
+                    // Si no hay claims o algo está mal, retorna no autorizado
+                    context.HttpContext.Session.Clear();
+                    context.Result = new RedirectResult("~/Account/Login");
+                    return;
+                }
                 if (!_securityController.JwtCurrentUser(claimsIdentity.Name, token))
                 {
-                    throw new SecurityTokenValidationException("Invalid token.");
+                    context.HttpContext.Session.Clear();
+                    context.Result = new RedirectResult("~/Account/Login");
+                    //throw new SecurityTokenValidationException("Invalid token.");
+
+                    return;
+                }
+                if (securityToken is JwtSecurityToken jwtToken)
+                {
+                    var exp = jwtToken.ValidTo;
+                    if (exp < DateTime.UtcNow)
+                    {
+                        context.HttpContext.Session.Clear();
+                        context.Result = new RedirectResult("~/Account/Login");
+                        return;
+                    }
                 }
 
                 Thread.CurrentPrincipal = claimsPrincipal;
@@ -67,11 +93,19 @@ namespace MCol.Web.Filters
             }
             catch (SecurityTokenValidationException)
             {
-                context.Result = new UnauthorizedResult();
+                //context.Result = new UnauthorizedResult();
+                context.HttpContext.Session.Clear();
+                context.Result = new RedirectResult("~/Account/Login");
+                return;
+
             }
             catch (Exception)
             {
-                context.Result = new UnauthorizedResult();
+                //context.Result = new UnauthorizedResult();
+                context.HttpContext.Session.Clear();
+                context.Result = new RedirectResult("~/Account/Login");
+                return;
+
             }
         }
     }

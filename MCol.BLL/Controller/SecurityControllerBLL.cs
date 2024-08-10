@@ -149,17 +149,41 @@ namespace MCol.BLL.Controller
             _context.SaveChanges();
         }
 
-        public void ControlFinalSessionUser(string userName)
+        public void ControlFinalSessionUser(string token)
         {
-            var userSession = _context.tb_usuarios_logueados.FirstOrDefault(u => u.login == userName);
-
-            if (userSession != null)
+            try
             {
-                _context.tb_usuarios_logueados.Remove(userSession);
-                _context.SaveChanges();
+                var userSession = _context.tb_usuarios_logueados.FirstOrDefault(u => u.key_sesion == token);
+                var secretKey = _configuration["Jwt:Key"];
+                var audienceToken = _configuration["Jwt:Audience"];
+                var issuerToken = _configuration["Jwt:Issuer"];
+                var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secretKey));
+
+                var validationParameters = new TokenValidationParameters()
+                {
+                    ValidAudience = audienceToken,
+                    ValidIssuer = issuerToken,
+                    ValidateLifetime = true,
+                    ValidateIssuer = true,
+                    ValidateAudience = true,
+                    ValidateIssuerSigningKey = true,
+                    IssuerSigningKey = securityKey
+                };
+                var tokenHandler = new System.IdentityModel.Tokens.Jwt.JwtSecurityTokenHandler();
+                var claimsPrincipal = tokenHandler.ValidateToken(token, validationParameters, out var securityToken);
+                var claimsIdentity = claimsPrincipal.Identity as ClaimsIdentity;
+                var userName = claimsIdentity.Name;
+                if (userSession != null)
+                {
+                    _context.tb_usuarios_logueados.Remove(userSession);
+                    _context.SaveChanges();
+                }
+            }
+            catch (Exception)
+            {
+
             }
         }
-  
 
         public bool JwtCurrentUser(string username, string token)
         {
@@ -260,16 +284,17 @@ namespace MCol.BLL.Controller
             return userPermissions.Distinct().OrderBy(p => p.Modulo.Orden).ThenBy(p => p.Orden).ToList();
         }
 
-
         public string GenerateToken(string username, IEnumerable<Claim> additionalClaims = null)
         {
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("your_very_long_secret_key_here_which_is_32_chars"));
             var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 
             var claims = new List<Claim>
-    {
-        new Claim(ClaimTypes.Name, username)
-    };
+                {
+                new Claim(ClaimTypes.Name, username),
+                new Claim(JwtRegisteredClaimNames.Sub, username),
+                new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
+                };
 
             if (additionalClaims != null)
             {
@@ -277,8 +302,8 @@ namespace MCol.BLL.Controller
             }
 
             var token = new JwtSecurityToken(
-                issuer: "your_issuer",
-                audience: "your_audience",
+                issuer: _configuration["Jwt:Issuer"],
+                audience: _configuration["Jwt:Audience"],
                 claims: claims,
                 expires: DateTime.Now.AddMinutes(30),
                 signingCredentials: creds);
@@ -290,13 +315,6 @@ namespace MCol.BLL.Controller
         {
             var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_secretKey));
             var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
-
-            //var claims = new[]
-            //{
-            //new Claim(JwtRegisteredClaimNames.Sub, username),
-            //new Claim(JwtRegisteredClaimNames.Name, username),
-            //new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
-            //};
             var claims = new List<Claim>
             {
                 new Claim(ClaimTypes.Name, username),
@@ -305,10 +323,10 @@ namespace MCol.BLL.Controller
             };
 
             var token = new JwtSecurityToken(
-                issuer: "your_issuer",
-                audience: "your_audience",
+                issuer: _configuration["Jwt:Issuer"],
+                audience: _configuration["Jwt:Audience"],
                 claims: claims,
-                expires: DateTime.Now.AddMinutes(30),
+                expires: DateTime.Now.AddMinutes(1),
                 signingCredentials: credentials);
 
             return new JwtSecurityTokenHandler().WriteToken(token);
@@ -330,34 +348,6 @@ namespace MCol.BLL.Controller
             }
         }
 
-
-        //private static string _secretKey;
-
-        //public static void Configure(IConfiguration configuration)
-        //{
-        //    _secretKey = configuration["Jwt:Key"];
-        //}
-
-        //public string GenerateTokenJwt(string username)
-        //{
-        //    var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_secretKey));
-        //    var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
-
-        //    var claims = new[]
-        //    {
-        //    new Claim(JwtRegisteredClaimNames.Sub, username),
-        //    new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
-        //};
-
-        //    var token = new JwtSecurityToken(
-        //        issuer: _configuration["Jwt:Issuer"],
-        //        audience: _configuration["Jwt:Audience"],
-        //        claims: claims,
-        //        expires: DateTime.Now.AddMinutes(30),
-        //        signingCredentials: credentials);
-
-        //    return new JwtSecurityTokenHandler().WriteToken(token);
-        //}
         public string GetIP()
             {
                 string IP;

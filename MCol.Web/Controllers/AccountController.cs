@@ -82,23 +82,29 @@ namespace MCol.Web.Controllers
                     //HttpContext.Session.SetString("Menu", JsonConvert.SerializeObject(menu));
                     Response.Cookies.Append("Token", userdto.TokenAutorizacion);
 
-                    return RedirectToAction("Index", "Dashboard");
+                    return Json(new { success = true, redirectUrl = @Url.Action("Index", "Dashboard") });
                 }
 
-                ViewData["Error"] = "Invalid login attempt.";
-                return View("Login", loginDto);
+                //ViewData["Error"] = "Invalid login attempt.";
+                return Json(new { success = false, errorMessage = "Invalid login attempt." });
             }
             catch (Exception ex)
             {
-                ViewData["Error"] = "An error occurred during login.";
-                return View("Login", loginDto);
+                //ViewData["Error"] = "An error occurred during login.";
+                return Json(new { success = false, errorMessage = "An error occurred during login." });
+
             }
         }
         [HttpGet]
         public IActionResult Logout()
         {
-            _securityController.ControlFinalSessionUser(HttpContext.Session.GetString("User"));
+
+
+            _securityController.ControlFinalSessionUser(token: HttpContext.Request.Cookies["Token"]);
             HttpContext.Session.Clear();
+            Response.Cookies.Delete("Token");
+            Response.Cookies.Delete("ASP.NET_SessionId");
+
             return RedirectToAction("Login", "Account");
         }
     }
