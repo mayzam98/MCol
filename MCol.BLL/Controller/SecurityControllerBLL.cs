@@ -69,7 +69,7 @@ namespace MCol.BLL.Controller
         {
             var permissions = new List<PermitDTO>();
 
-            var paginas = _context.tb_paginas.ToList();
+            var paginas = _context.tb_paginas.Include(p => p.fk_id_moduloNavigation).Include(p => p.tb_permisos).ToList();
 
             foreach (var pagina in paginas)
             {
@@ -78,7 +78,7 @@ namespace MCol.BLL.Controller
                     IdPagina = pagina.id_pagina,
                     Pagina = pagina.descripcion,
                     Icono = pagina.icono,
-                    Modulo = "VERIFICARMODULOS"//pagina.tbl_modulos.nombre
+                    Modulo = pagina.fk_id_moduloNavigation.descripcion,//pagina.tbl_modulos.nombre
                 };
 
                 foreach (var perfil in perfiles)
@@ -105,10 +105,20 @@ namespace MCol.BLL.Controller
 
         public List<PaginaDTO> GetMenu(List<PerfilDTO> perfiles)
         {
+            // Obtener todos los permisos en memoria primero
             var permisos = GetPermissions(perfiles).Where(p => p.Acceso).ToList();
-            var paginas = _context.tb_paginas.Where(p => permisos.Any(pe => pe.IdPagina == p.id_pagina)).ToList();
 
-            return paginas.Select(p => new PaginaDTO
+            // Obtener todas las páginas desde la base de datos
+            var paginas = _context.tb_paginas
+                .Include(p => p.fk_id_moduloNavigation)
+                .ToList();
+
+            // Filtrar las páginas en memoria utilizando los permisos obtenidos anteriormente
+            var paginasFiltradas = paginas
+                .Where(p => permisos.Any(pe => pe.IdPagina == p.id_pagina))
+                .ToList();
+
+            return paginasFiltradas.Select(p => new PaginaDTO
             {
                 Id = p.id_pagina,
                 NombrePagina = p.descripcion,

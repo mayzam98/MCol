@@ -78,8 +78,8 @@ namespace MCol.Web.Controllers
                     var permissions = _securityController.GetPermissions(userdto.Perfiles);
                     HttpContext.Session.SetString("Permissions", JsonConvert.SerializeObject(permissions));
 
-                    //var menu = _securityController.GetMenu(userdto.Perfiles);
-                    //HttpContext.Session.SetString("Menu", JsonConvert.SerializeObject(menu));
+                    var menu = _securityController.GetMenu(userdto.Perfiles);
+                    HttpContext.Session.SetString("Menu", JsonConvert.SerializeObject(menu));
                     Response.Cookies.Append("Token", userdto.TokenAutorizacion);
 
                     return Json(new { success = true, redirectUrl = @Url.Action("Index", "Dashboard") });

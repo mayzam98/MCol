@@ -7,11 +7,12 @@ namespace MCol.Web.Controllers
 {
     [ServiceFilter(typeof(JwtAuthenticationFilter))]
 
-    public class DashboardController : Controller
+    public class DashboardController : BaseController
     {
         private readonly SecurityController _securityController;
 
         public DashboardController(SecurityController securityController)
+            : base(securityController) 
         {
             _securityController = securityController;
         }

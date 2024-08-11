@@ -15,7 +15,6 @@ builder.Services.AddControllersWithViews();
 builder.Services.AddDbContextFactory<ColegiosCOLContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("connectionCol")));
 
-
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
     {
