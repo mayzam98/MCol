@@ -81,7 +81,7 @@ namespace MCol.Web.Controllers
                     var menu = _securityController.GetMenu(userdto.Perfiles);
                     HttpContext.Session.SetString("Menu", JsonConvert.SerializeObject(menu));
                     Response.Cookies.Append("Token", userdto.TokenAutorizacion);
-
+                    ViewBag.Menu = menu;
                     return Json(new { success = true, redirectUrl = @Url.Action("Index", "Dashboard") });
                 }
 

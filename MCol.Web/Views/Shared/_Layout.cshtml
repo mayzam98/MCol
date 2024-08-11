@@ -1,4 +1,5 @@
-﻿<!DOCTYPE html>
+﻿@using MCol.DTO.Security
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8">
@@ -8,7 +9,6 @@
     <link rel="stylesheet" href="~/css/custom.css">
     <link href="~/lib/fontawesome/css/fontawesome.css" rel="stylesheet" />
     <script src="~/lib/fontawesome/js/fontawesome.js"></script>
-
 </head>
 <body>
     <div class="d-flex" id="wrapper">
@@ -16,20 +16,39 @@
         <div class="bg-dark text-white" id="sidebar-wrapper">
             <div class="sidebar-heading text-center py-4 fs-4 fw-bold text-uppercase border-bottom">StarAdmin</div>
             <div class="list-group list-group-flush my-3">
-                <a href="~/Dashboard/Index" class="list-group-item list-group-item-action bg-transparent text-white fw-bold"><i class="fas fa-tachometer-alt me-2"></i>Dashboard</a>
-                <a href="#uiElementsSubmenu" data-bs-toggle="collapse" aria-expanded="false" class="dropdown-toggle list-group-item list-group-item-action bg-transparent text-white fw-bold"><i class="fas fa-layer-group me-2"></i>UI Elements</a>
-                <ul class="collapse list-unstyled" id="uiElementsSubmenu">
-                    <li><a href="#" class="list-group-item list-group-item-action bg-transparent text-white">Buttons</a></li>
-                    <li><a href="#" class="list-group-item list-group-item-action bg-transparent text-white">Cards</a></li>
-                </ul>
-                <a href="#tablesSubmenu" data-bs-toggle="collapse" aria-expanded="false" class="dropdown-toggle list-group-item list-group-item-action bg-transparent text-white fw-bold"><i class="fas fa-table me-2"></i>Tables</a>
+                @{
+                    List<PaginaDTO> Paginas = (List<PaginaDTO>)ViewBag.Menu;
+                    List<ModuloDTO> Modulos = Paginas != null ? Paginas.Select(m => m.Modulo).ToList().OrderBy(e => e.Orden).ToList() : new List<ModuloDTO>();
+                    IEnumerable<int> IteraModulos = Modulos.Select(e => e.Id).Distinct();
+                    foreach (int idModulo in IteraModulos)
+                    {
+                        var Modulo = (ModuloDTO)Modulos.FirstOrDefault(m => m.Id == idModulo);
+                        var paginasModulo = Paginas.Where(p => p.Modulo.Id == idModulo).ToList();
+
+                        <a href="#modulo_@Modulo.Id" data-bs-toggle="collapse" aria-expanded="false" class="dropdown-toggle list-group-item list-group-item-action bg-transparent text-white fw-bold">
+                            <i class="@Modulo.Icono fas fa-layer-group me-2"></i>@Modulo.Nombre
+                        </a>
+                        <ul class="collapse list-unstyled" id="modulo_@Modulo.Id">
+
+                            @foreach (var itemPagina in paginasModulo)
+                            {
+                                <li><a href="#@itemPagina.Path" class="list-group-item list-group-item-action bg-transparent text-white">@itemPagina.NombrePagina</a></li>
+
+                            }
+                        </ul>
+                    }
+                
+                }
+                
+
+                @* <a href="#tablesSubmenu" data-bs-toggle="collapse" aria-expanded="false" class="dropdown-toggle list-group-item list-group-item-action bg-transparent text-white fw-bold"><i class="fas fa-table me-2"></i>Tables</a>
                 <ul class="collapse list-unstyled" id="tablesSubmenu">
                     <li><a href="#" class="list-group-item list-group-item-action bg-transparent text-white">Simple Tables</a></li>
                     <li><a href="#" class="list-group-item list-group-item-action bg-transparent text-white">Data Tables</a></li>
                 </ul>
                 <a href="#" class="list-group-item list-group-item-action bg-transparent text-white fw-bold"><i class="fas fa-chart-line me-2"></i>Reports</a>
                 <a href="#" class="list-group-item list-group-item-action bg-transparent text-white fw-bold"><i class="fas fa-user me-2"></i>User Pages</a>
-                <a href="#" class="list-group-item list-group-item-action bg-transparent text-white fw-bold"><i class="fas fa-cog me-2"></i>Settings</a>
+                <a href="#" class="list-group-item list-group-item-action bg-transparent text-white fw-bold"><i class="fas fa-cog me-2"></i>Settings</a> *@
             </div>
         </div>
         <!-- /#sidebar-wrapper -->

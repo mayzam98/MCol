@@ -20,6 +20,11 @@ namespace MCol.Web.Controllers
         [HttpGet]
         public IActionResult Index()
         {
+            if (!ValidateSession())
+            {
+                return RedirectToAction("Login", "Account");
+            }
+
             var username = User.Identity.Name;
             //var token = Request.Cookies["Token"]; // Obtener el token de las cookies
 

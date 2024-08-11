@@ -16,7 +16,7 @@ namespace MCol.Web.Controllers
 
         protected bool ValidateSession()
         {
-            if (HttpContext.Session.GetString("UserToken") != null)
+            if (HttpContext.Session.GetString("User") != null)
             {
                 var userJson = HttpContext.Session.GetString("User");
                 if (!string.IsNullOrEmpty(userJson))
@@ -24,6 +24,14 @@ namespace MCol.Web.Controllers
                     var userDto = JsonConvert.DeserializeObject<UserDTO>(userJson);
                     HttpContext.Session.SetString("Permissions", JsonConvert.SerializeObject(_securityController.GetPermissions(userDto.Perfiles)));
                     HttpContext.Session.SetString("Menu", JsonConvert.SerializeObject(_securityController.GetMenu(userDto.Perfiles)));
+                    // Save permissions and menu in session
+                    var permissions = _securityController.GetPermissions(userDto.Perfiles);
+                    HttpContext.Session.SetString("Permissions", JsonConvert.SerializeObject(permissions));
+
+                    var menu = _securityController.GetMenu(userDto.Perfiles);
+                    HttpContext.Session.SetString("Menu", JsonConvert.SerializeObject(menu));
+                    ViewBag.Menu = menu;
+
                     return true;
                 }
             }
@@ -42,6 +50,31 @@ namespace MCol.Web.Controllers
                 return pagePermission != null && pagePermission.Acceso;
             }
             return false;
+        }
+        protected int CurrentUser { get; set; }
+
+        private UserDTO sessionUser { get; set; }
+
+        protected UserDTO SessionUser
+        {
+            get
+            {
+                if (sessionUser == null)
+                {
+                    if (HttpContext.Session.GetString("User") != null)
+                    {
+                        var json = HttpContext.Session.GetString("User");
+                        sessionUser = JsonConvert.DeserializeObject<UserDTO>(json);
+                        this.CurrentUser = sessionUser.Id;
+                    }
+                    else
+                    {
+                        sessionUser = new UserDTO();
+                    }
+                }
+
+                return sessionUser;
+            }
         }
     }
 
