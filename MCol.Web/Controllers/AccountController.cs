@@ -72,7 +72,7 @@ namespace MCol.Web.Controllers
                 if (!string.IsNullOrEmpty(userdto.TokenAutorizacion))
                 {
                     HttpContext.Session.SetString("UserToken", userdto.TokenAutorizacion);
-                    HttpContext.Session.SetString("User", JsonConvert.SerializeObject(loginDto));
+                    HttpContext.Session.SetString("User", JsonConvert.SerializeObject(userdto));
 
                     // Save permissions and menu in session
                     var permissions = _securityController.GetPermissions(userdto.Perfiles);
@@ -82,7 +82,7 @@ namespace MCol.Web.Controllers
                     HttpContext.Session.SetString("Menu", JsonConvert.SerializeObject(menu));
                     Response.Cookies.Append("Token", userdto.TokenAutorizacion);
                     ViewBag.Menu = menu;
-                    return Json(new { success = true, redirectUrl = @Url.Action("Index", "Dashboard") });
+                    return Json(new { success = true, redirectUrl = @Url.Action("Index", "Home") });
                 }
 
                 //ViewData["Error"] = "Invalid login attempt.";

@@ -6,13 +6,16 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Net;
+using System.Numerics;
 using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
 namespace MCol.BLL.Controller
 {
@@ -35,35 +38,96 @@ namespace MCol.BLL.Controller
 
         public UserDTO Login(string username, string password)
         {
-            var user = _context.tb_usuarios
-                .Include(u => u.tb_usuarios_perfiles)
-                .FirstOrDefault(u => u.login == username && u.password == password/*Sha256(password)*/);
-
-            if (user != null)
+            try
             {
-                var userDTO = new UserDTO
+                var user = _context.tb_usuarios
+               .Include(u => u.tb_usuarios_perfiles)
+               .FirstOrDefault(u => u.login == username && u.password == password/*Sha256(password)*/);
+                if (user != null)
                 {
-                    Id = user.id_usuario,
-                    UserName = user.login,
-                    Nombre = user.nombre_completo,
-                    CorreoElectronico = user.correo_electronico,
-                    Perfiles = _context.tb_usuarios_perfiles
-                        .Where(up => up.fk_id_usuario == user.id_usuario)
-                        .Select(up => new PerfilDTO
-                        {
-                            Id = up.fk_id_perfil,
-                            Descripcion = "problema?entity?",//up.tbl_perfiles.descripcion,
-                            Estado =(bool) up.estado,
-                        }).ToList()
-                };
-
-                userDTO.TokenAutorizacion = GenerateToken(userDTO.UserName);
-                ControlInicioSessionUser(userDTO);
-                return userDTO;
+                    return GetUsuario(username);
+                }
             }
+            catch (Exception)
+            {
 
+            }
             return null;
         }
+        public UserDTO GetUsuario(string username, int id = 0) 
+        {   
+            UserDTO userDTO = null;
+            try
+            {
+                var user = _context.tb_usuarios
+               .Include(u => u.tb_usuarios_perfiles)
+               .FirstOrDefault(u => u.login == username/*Sha256(password)*/);
+
+                if (user != null)
+                {
+                    userDTO = new UserDTO
+                    {
+                        Id = user.id_usuario,
+                        UserName = user.login,
+                        Nombre = user.nombre_completo,
+                        CorreoElectronico = user.correo_electronico,
+                        Perfiles = _context.tb_usuarios_perfiles
+                            .Where(up => up.fk_id_usuario == user.id_usuario)
+                            .Select(up => new PerfilDTO
+                            {
+                                Id = up.fk_id_perfil,
+                                Descripcion = "problema?entity?",//up.tbl_perfiles.descripcion,
+                                Estado = (bool)up.estado,
+                                Permisos = _context.tb_permisos
+                                    .Include(p => p.fk_id_paginaNavigation)
+                                    .Include(p => p.fk_id_paginaNavigation.fk_id_moduloNavigation)
+                                    .Where(p => p.fk_id_perfil == up.fk_id_perfil)
+                                    .Select(p => new PermitDTO
+                                    {
+                                        Actualizar = p.actualizar,
+                                        Borrar = p.borrar,
+                                        Crear = p.crear,
+                                        Leer = p.lectura,
+                                        IdPagina = (int)p.fk_id_pagina, 
+                                        IdPerfil = p.fk_id_perfil,
+                                        Icono = p.fk_id_paginaNavigation.icono,
+                                        Modulo = p.fk_id_paginaNavigation.fk_id_moduloNavigation.descripcion,
+                                        Pagina = p.fk_id_paginaNavigation.descripcion,
+                                        Perfil = p.fk_id_perfilNavigation.descripcion                                   
+                                    }).ToList(),
+                            }).ToList(),
+                        CambioClave = user.cambio_clave,
+                        IdColegio = user.fk_id_colegio,
+                        Colegio = user.fk_id_colegio != null ? _context.tb_colegios
+                            .FirstOrDefault(c => c.id_colegio == user.fk_id_colegio)
+                            .nombre : "",
+                        Estado = user.estado,
+                        FechaCreacion = user.fecha_creacion,
+                        FechaModificacion = user.fecha_modificacion,
+                        TokenAutorizacion = user.token,
+                        UsuarioCreacion = user.usuario_creacion,
+                        UsuarioModificacion = user.usuario_modificacion,    
+                        Password = "",
+
+                    };
+
+                    userDTO.TokenAutorizacion = GenerateToken(userDTO.UserName);
+                    ControlInicioSessionUser(userDTO);
+                    return userDTO;
+                }
+                return userDTO;
+
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }  
+           
+
+
+        } 
+
 
         public List<PermitDTO> GetPermissions(List<PerfilDTO> perfiles)
         {
@@ -394,5 +458,23 @@ namespace MCol.BLL.Controller
                 }
                 return IP;
             }
+
+        public PermitDTO Validate(string url, List<PerfilDTO> perfiles)
+        {
+            var permit = new PermitDTO();
+            var urlSplit = url.Split('/');
+
+            var controller = urlSplit[1];
+            var action = urlSplit.Length > 2 ? urlSplit[2] : "";
+
+            var page = _context.tb_paginas.FirstOrDefault(p => p.ruta.Contains(controller) && p.ruta.Contains(action));
+            if (page == null)
+                page = _context.tb_paginas.FirstOrDefault(p => url.Contains(p.ruta));
+            if (page != null)
+            {
+                permit = GetPermissions(perfiles).FirstOrDefault(p => p.IdPagina == page.id_pagina);
+            }
+            return permit;
+        }
     }
 }

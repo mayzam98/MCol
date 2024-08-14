@@ -98,16 +98,11 @@ namespace MCol.DTO.Security
         [DisplayName("Perfil")]
         public int IdPerfil { get; set; }
         public List<PerfilDTO> Perfiles { get; set; }
-        public int? IdEmpresa { get; set; }
-        public string Empresa { get; set; }
-        public string PaisUsuario { get; set; }
-        public string PaisSeleccionado { get; set; }
+        public int? IdColegio{ get; set; }
+        public string Colegio { get; set; }
         public string TokenAutorizacion { get; set; }
         public bool? CambioClave { get; set; }
-        public bool EstadoAsignarPuntoVenta { get; set; }
-        public bool PerfilDebeAsignarPuntoVenta { get; set; }
         public bool Estado { get; set; }
-        public int ControlEstado { get; set; }
         public string UsuarioCreacion { get; set; }
         [DisplayName("Fecha Creación")]
         public DateTime? FechaCreacion { get; set; }

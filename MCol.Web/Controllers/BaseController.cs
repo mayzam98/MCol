@@ -8,12 +8,13 @@ namespace MCol.Web.Controllers
     public class BaseController : Controller
     {
         protected SecurityController _securityController;
-
+        protected int CurrentUser { get; set; }
+        private UserDTO sessionUser { get; set; }
+        protected PermitDTO Permit;
         public BaseController(SecurityController securityController)
         {
             _securityController = securityController;
         }
-
         protected bool ValidateSession()
         {
             if (HttpContext.Session.GetString("User") != null)
@@ -21,9 +22,33 @@ namespace MCol.Web.Controllers
                 var userJson = HttpContext.Session.GetString("User");
                 if (!string.IsNullOrEmpty(userJson))
                 {
+
+                    Permit = new PermitDTO();
+                    sessionUser = JsonConvert.DeserializeObject<UserDTO>(userJson);
+                    var url = HttpContext.Request.Path.Value;
+                    if (url != null)
+                    {
+                        if (!string.IsNullOrEmpty(url) && url != "/")
+                        {
+                            Permit = _securityController.Validate(url, sessionUser.Perfiles);
+                        }
+                        try
+                        {
+                            if (!Permit.Acceso && url != "/" && !url.Contains("Login") && !url.Contains("Home"))
+                            {
+                                return false;
+                            }
+                        }
+                        catch (Exception)
+                        {
+                            return false;
+                        }
+                    }
+                    ViewBag.Permit = Permit;
                     var userDto = JsonConvert.DeserializeObject<UserDTO>(userJson);
+                    sessionUser = userDto;
                     HttpContext.Session.SetString("Permissions", JsonConvert.SerializeObject(_securityController.GetPermissions(userDto.Perfiles)));
-                    HttpContext.Session.SetString("Menu", JsonConvert.SerializeObject(_securityController.GetMenu(userDto.Perfiles)));
+                    //HttpContext.Session.SetString("Menu", JsonConvert.SerializeObject(_securityController.GetMenu(userDto.Perfiles)));
                     // Save permissions and menu in session
                     var permissions = _securityController.GetPermissions(userDto.Perfiles);
                     HttpContext.Session.SetString("Permissions", JsonConvert.SerializeObject(permissions));
@@ -51,9 +76,6 @@ namespace MCol.Web.Controllers
             }
             return false;
         }
-        protected int CurrentUser { get; set; }
-
-        private UserDTO sessionUser { get; set; }
 
         protected UserDTO SessionUser
         {
