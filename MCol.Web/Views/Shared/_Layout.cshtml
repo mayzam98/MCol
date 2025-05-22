@@ -11,6 +11,10 @@
     <script src="~/lib/fontawesome/js/fontawesome.js"></script>
 </head>
 <body>
+    @{
+        ViewData["UseDynamicTabs"] = true;
+    }
+
     <div class="d-flex" id="wrapper">
         <!-- Sidebar -->
         <div class="bg-dark text-white" id="sidebar-wrapper">
@@ -29,26 +33,18 @@
                             <i class="@Modulo.Icono fas fa-layer-group me-2"></i>@Modulo.Nombre
                         </a>
                         <ul class="collapse list-unstyled" id="modulo_@Modulo.Id">
-
                             @foreach (var itemPagina in paginasModulo)
                             {
-                                <li><a href="@itemPagina.Path" class="list-group-item list-group-item-action bg-transparent text-white">@itemPagina.NombrePagina</a></li>
-
+                                <li>
+                                    <a href="javascript:void(0);" onclick="openTab('@itemPagina.NombrePagina', '@itemPagina.Path')"
+                                       class="list-group-item list-group-item-action bg-transparent text-white">
+                                        @itemPagina.NombrePagina
+                                    </a>
+                                </li>
                             }
                         </ul>
                     }
-                
                 }
-                
-
-                @* <a href="#tablesSubmenu" data-bs-toggle="collapse" aria-expanded="false" class="dropdown-toggle list-group-item list-group-item-action bg-transparent text-white fw-bold"><i class="fas fa-table me-2"></i>Tables</a>
-                <ul class="collapse list-unstyled" id="tablesSubmenu">
-                    <li><a href="#" class="list-group-item list-group-item-action bg-transparent text-white">Simple Tables</a></li>
-                    <li><a href="#" class="list-group-item list-group-item-action bg-transparent text-white">Data Tables</a></li>
-                </ul>
-                <a href="#" class="list-group-item list-group-item-action bg-transparent text-white fw-bold"><i class="fas fa-chart-line me-2"></i>Reports</a>
-                <a href="#" class="list-group-item list-group-item-action bg-transparent text-white fw-bold"><i class="fas fa-user me-2"></i>User Pages</a>
-                <a href="#" class="list-group-item list-group-item-action bg-transparent text-white fw-bold"><i class="fas fa-cog me-2"></i>Settings</a> *@
             </div>
         </div>
         <!-- /#sidebar-wrapper -->
@@ -80,8 +76,22 @@
                     </div>
                 </div>
             </nav>
-
             <div class="container-fluid px-4">
+                <ul class="nav nav-tabs" id="dynamicTabs" role="tablist">
+                    <!-- Pestaña inicial -->
+                    <li class="nav-item">
+                        <a class="nav-link active" id="tab-inicial-tab" data-bs-toggle="tab" href="#tab-inicial"
+                           role="tab" aria-controls="tab-inicial" aria-selected="true">
+                            Inicio
+                        </a>
+                    </li>
+                </ul>
+                <div class="tab-content" id="dynamicTabsContent">
+                    <!-- Contenido de la pestaña inicial -->
+                    <div class="tab-pane fade show active" id="tab-inicial" role="tabpanel" aria-labelledby="tab-inicial-tab">
+                        <div class="text-center p-3">Cargando contenido inicial...</div>
+                    </div>
+                </div>
                 @RenderBody()
             </div>
         </div>
@@ -94,6 +104,99 @@
     <script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
     <script src="~/lib/jquery-validation/dist/additional-methods.min.js"></script>
     <script>
+
+        document.addEventListener("DOMContentLoaded", function () {
+            // URL de la página inicial
+            const initialUrl = '@ViewData["InitialPageUrl"]';
+
+            // Contenedor de contenido inicial
+            const initialContent = document.getElementById('tab-inicial');
+
+            if (initialUrl && initialContent) {
+                fetch(initialUrl)
+                    .then(response => response.text())
+                    .then(html => {
+                        initialContent.innerHTML = html;
+
+                        // Activar la pestaña inicial de forma segura
+                        const initialTab = document.querySelector('#tab-inicial-tab');
+                        if (initialTab) {
+                            bootstrap.Tab.getOrCreateInstance(initialTab).show();
+                        } else {
+                            console.error('La pestaña inicial no se encontró en el DOM.');
+                        }
+                    })
+                    .catch(error => {
+                        initialContent.innerHTML = '<div class="text-danger p-3">Error al cargar la página inicial.</div>';
+                        console.error('Error al obtener la página inicial:', error);
+                    });
+            } else {
+                console.error('El contenedor de contenido inicial o la URL no están definidos.');
+            }
+        });
+
+        function openTab(title, url) {
+            const tabsContainer = document.getElementById('dynamicTabs');
+            const contentContainer = document.getElementById('dynamicTabsContent');
+
+            if (!tabsContainer || !contentContainer) {
+                console.error('Los contenedores de pestañas dinámicas no existen en el DOM.');
+                return;
+            }
+
+            // Verificar si ya existe una pestaña para esta URL
+            const existingTab = document.querySelector(`a[data-url="${url}"]`);
+            if (existingTab) {
+                const tabId = existingTab.getAttribute('href').substring(1);
+                bootstrap.Tab.getOrCreateInstance(document.querySelector(`#${tabId}`)).show();
+                return;
+            }
+
+            // Crear un nuevo ID para la pestaña
+            const tabId = 'tab-' + Date.now();
+
+            // Crear la pestaña
+            const newTab = document.createElement('li');
+            newTab.classList.add('nav-item');
+            newTab.innerHTML = `
+                <a class="nav-link" id="${tabId}-tab" data-bs-toggle="tab" href="#${tabId}"
+                   role="tab" aria-controls="${tabId}" aria-selected="false" data-url="${url}">
+                    ${title} <span class="ms-1" onclick="closeTab('${tabId}')" style="cursor:pointer;">&times;</span>
+                </a>
+            `;
+            tabsContainer.appendChild(newTab);
+
+            // Crear el contenido de la pestaña
+            const newTabContent = document.createElement('div');
+            newTabContent.classList.add('tab-pane', 'fade');
+            newTabContent.id = tabId;
+            newTabContent.setAttribute('role', 'tabpanel');
+            newTabContent.setAttribute('aria-labelledby', `${tabId}-tab`);
+            newTabContent.innerHTML = '<div class="text-center p-3">Cargando...</div>';
+            contentContainer.appendChild(newTabContent);
+
+            // Cargar contenido dinámico
+            fetch(url)
+                .then(response => response.text())
+                .then(html => {
+                    newTabContent.innerHTML = html;
+                    bootstrap.Tab.getOrCreateInstance(document.querySelector(`#${tabId}`)).show();
+                })
+                .catch(error => {
+                    newTabContent.innerHTML = `<div class="text-danger p-3">Error al cargar la página.</div>`;
+                    console.error('Error al obtener la página:', error);
+                });
+        }
+        function closeTab(tabId) {
+            document.querySelector(`#${tabId}-tab`).parentElement.remove();
+            document.querySelector(`#${tabId}`).remove();
+
+            const firstTab = document.querySelector('#dynamicTabs .nav-link');
+            if (firstTab) {
+                bootstrap.Tab.getOrCreateInstance(firstTab).show();
+            }
+        }
+
         document.getElementById("menu-toggle").addEventListener("click", function () {
             document.getElementById("wrapper").classList.toggle("toggled");
         });

@@ -34,8 +34,6 @@ public partial class tb_paginas
 
     public int? orden { get; set; }
 
-    [StringLength(50)]
-    public string nombre_title_html { get; set; }
 
     [ForeignKey("fk_id_modulo")]
     [InverseProperty("tb_paginas")]

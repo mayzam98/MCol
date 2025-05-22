@@ -20,7 +20,7 @@ public partial class tb_modulos
 
     [Required]
     [StringLength(150)]
-    public string imagenIcono { get; set; }
+    public string icono { get; set; }
 
     public bool estado { get; set; }
 

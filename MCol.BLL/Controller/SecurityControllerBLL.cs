@@ -132,38 +132,47 @@ namespace MCol.BLL.Controller
         public List<PermitDTO> GetPermissions(List<PerfilDTO> perfiles)
         {
             var permissions = new List<PermitDTO>();
-
-            var paginas = _context.tb_paginas.Include(p => p.fk_id_moduloNavigation).Include(p => p.tb_permisos).ToList();
-
-            foreach (var pagina in paginas)
+            try
             {
-                var permiso = new PermitDTO
-                {
-                    IdPagina = pagina.id_pagina,
-                    Pagina = pagina.descripcion,
-                    Icono = pagina.icono,
-                    Modulo = pagina.fk_id_moduloNavigation.descripcion,//pagina.tbl_modulos.nombre
-                };
+                var paginas = _context.tb_paginas.Include(p => p.fk_id_moduloNavigation).Include(p => p.tb_permisos).ToList();
 
-                foreach (var perfil in perfiles)
+                foreach (var pagina in paginas)
                 {
-                    var permisoPerfil = _context.tb_permisos.FirstOrDefault(p => p.fk_id_pagina == pagina.id_pagina && p.fk_id_perfil == perfil.Id);
-
-                    if (permisoPerfil != null)
+                    var permiso = new PermitDTO
                     {
-                        permiso.Leer = permiso.Leer || permisoPerfil.lectura;
-                        permiso.Crear = permiso.Crear || permisoPerfil.crear;
-                        permiso.Actualizar = permiso.Actualizar || permisoPerfil.actualizar;
-                        permiso.Borrar = permiso.Borrar || permisoPerfil.borrar;
+                        IdPagina = pagina.id_pagina,
+                        Pagina = pagina.descripcion,
+                        Icono = pagina.icono,
+                        Modulo = pagina.fk_id_moduloNavigation.descripcion,//pagina.tbl_modulos.nombre
+                    };
+
+                    foreach (var perfil in perfiles)
+                    {
+                        var permisoPerfil = _context.tb_permisos.FirstOrDefault(p => p.fk_id_pagina == pagina.id_pagina && p.fk_id_perfil == perfil.Id);
+
+                        if (permisoPerfil != null)
+                        {
+                            permiso.Leer = permiso.Leer || permisoPerfil.lectura;
+                            permiso.Crear = permiso.Crear || permisoPerfil.crear;
+                            permiso.Actualizar = permiso.Actualizar || permisoPerfil.actualizar;
+                            permiso.Borrar = permiso.Borrar || permisoPerfil.borrar;
+                        }
+                    }
+
+                    if (permiso.Acceso)
+                    {
+                        permissions.Add(permiso);
                     }
                 }
 
-                if (permiso.Acceso)
-                {
-                    permissions.Add(permiso);
-                }
             }
+            catch (Exception e)
+            {
 
+
+               
+            }
+            
             return permissions;
         }
 
@@ -191,7 +200,7 @@ namespace MCol.BLL.Controller
                 {
                     Id = p.fk_id_moduloNavigation.id_modulo,
                     Nombre = p.fk_id_moduloNavigation.descripcion,
-                    Icono = p.fk_id_moduloNavigation.imagenIcono,
+                    Icono = p.fk_id_moduloNavigation.icono,
                     Estado = p.fk_id_moduloNavigation.estado
                 },
                 Path = p.ruta,
@@ -349,7 +358,7 @@ namespace MCol.BLL.Controller
                                       {
                                           Id = mdl.id_modulo,
                                           Nombre = mdl.descripcion,
-                                          Icono = mdl.imagenIcono,
+                                          Icono = mdl.icono,
                                           Orden = mdl.orden,
                                           Estado = mdl.estado
                                       }
