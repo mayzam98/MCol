@@ -148,7 +148,7 @@
             const existingTab = document.querySelector(`a[data-url="${url}"]`);
             if (existingTab) {
                 const tabId = existingTab.getAttribute('href').substring(1);
-                bootstrap.Tab.getOrCreateInstance(document.querySelector(`#${tabId}`)).show();
+                bootstrap.Tab.getOrCreateInstance(document.querySelector(`#${tabId}-tab`)).show();
                 return;
             }
 
@@ -166,7 +166,7 @@
             `;
             tabsContainer.appendChild(newTab);
 
-            // Crear el contenido de la pestaña
+            // Crear el contenido de la pestaña (pero aún no mostrar)
             const newTabContent = document.createElement('div');
             newTabContent.classList.add('tab-pane', 'fade');
             newTabContent.id = tabId;
@@ -180,7 +180,12 @@
                 .then(response => response.text())
                 .then(html => {
                     newTabContent.innerHTML = html;
-                    bootstrap.Tab.getOrCreateInstance(document.querySelector(`#${tabId}`)).show();
+
+                    // ✅ Activar pestaña solo después de haber insertado el contenido
+                    const newTabLink = document.querySelector(`#${tabId}-tab`);
+                    if (newTabLink) {
+                        bootstrap.Tab.getOrCreateInstance(newTabLink).show();
+                    }
                 })
                 .catch(error => {
                     newTabContent.innerHTML = `<div class="text-danger p-3">Error al cargar la página.</div>`;
