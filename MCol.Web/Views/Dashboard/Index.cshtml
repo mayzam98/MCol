@@ -73,6 +73,23 @@
             </div>
         </div>
     </div>
+
+    <div class="card mb-4 shadow-sm">
+        <div class="card-header">Enviar Datos del Cliente</div>
+        <div class="card-body">
+            <form id="clientForm">
+                <div class="mb-3">
+                    <label for="nombre" class="form-label">Nombre del Cliente</label>
+                    <input type="text" class="form-control" id="nombre" required>
+                </div>
+                <div class="mb-3">
+                    <label for="celular" class="form-label">Celular</label>
+                    <input type="text" class="form-control" id="celular" required>
+                </div>
+                <button type="submit" class="btn btn-primary">Enviar</button>
+            </form>
+        </div>
+    </div>
 </div>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
@@ -131,4 +148,30 @@
             }],
         },
     });
+
+        document.getElementById("clientForm").addEventListener("submit", async function (e) {
+            e.preventDefault();
+
+            const nombre = document.getElementById("nombre").value;
+            const celular = document.getElementById("celular").value;
+
+            const payload = {
+                nombre: nombre,
+                celular: celular
+            };
+
+            // ✅ POST Request
+            await fetch("https://webhook.site/8059d571-8c10-488f-91d1-a711bf1b6cc3", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(payload)
+            });
+
+            // ✅ GET Request
+            await fetch(`https://webhook.site/8059d571-8c10-488f-91d1-a711bf1b6cc3?nombre=${encodeURIComponent(nombre)}&celular=${encodeURIComponent(celular)}`);
+
+            alert("Datos enviados correctamente por POST y GET");
+        });
 </script>
